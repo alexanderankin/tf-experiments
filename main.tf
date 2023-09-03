@@ -89,10 +89,11 @@ resource "azurerm_role_definition" "azure_cs_user" {
       "Microsoft.Resources/subscriptions/operationresults/read",
       "Microsoft.Resources/subscriptions/read",
       "Microsoft.Resources/subscriptions/resourceGroups/read",
-      "Microsoft.Support/*",
+      # "Microsoft.Support/*",
     ]
     data_actions = [
-      "Microsoft.CognitiveServices/*",
+      # must carefully select subset, otherwise, poor performance
+      # "Microsoft.CognitiveServices/*",
     ]
   }
 }
