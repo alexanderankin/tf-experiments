@@ -58,7 +58,7 @@ resource "azurerm_role_definition" "oai_user" {
 }
 
 resource "azurerm_role_definition" "oai_contributor" {
-  name  = "oai_user"
+  name  = "oai_contributor"
   scope = data.azurerm_subscription.current.id
   permissions {
     actions = [
@@ -73,7 +73,7 @@ resource "azurerm_role_definition" "oai_contributor" {
 }
 
 resource "azurerm_role_definition" "azure_cs_user" {
-  name  = "oai_user"
+  name  = "azure_cs_user"
   scope = data.azurerm_subscription.current.id
   permissions {
     actions = [
