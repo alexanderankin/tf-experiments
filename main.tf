@@ -10,8 +10,14 @@ terraform {
   required_version = ">= 1.1.0"
 }
 
+# az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>"
+# https://developer.hashicorp.com/terraform/tutorials/azure-get-started/azure-build#create-a-service-principal
 provider "azurerm" {
   features {}
+}
+
+# tf init -upgrade
+provider "azuread" {
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -32,6 +38,7 @@ data "azurerm_subscription" "current" {
 }
 
 # https://journeyofthegeek.com/2023/04/06/authorization-in-azure-openai-service/
+# add subscription level role "User Access Administrator" (Sub -> IAM -> + Add)
 resource "azurerm_role_definition" "oai_user" {
   name  = "oai_user"
   scope = data.azurerm_subscription.current.id
@@ -96,4 +103,21 @@ resource "azurerm_role_definition" "azure_cs_user" {
       # "Microsoft.CognitiveServices/*",
     ]
   }
+}
+
+# now, lets create an SP to use those
+# https://registry.terraform.io/providers/hashicorp/azuread/latest/docs#example-usage
+# Create an application
+# needs AD level permission
+# * Application.ReadWrite.All
+# * https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application#api-permissions
+resource "azuread_application" "example" {
+  display_name = "oai_example_sp"
+}
+
+# Create a service principal
+resource "azuread_service_principal" "example" {
+  application_id    = azuread_application.example.application_id
+  description       = azuread_application.example.display_name
+  alternative_names = [azuread_application.example.display_name]
 }
