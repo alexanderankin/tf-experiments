@@ -124,7 +124,9 @@ resource "azuread_service_principal" "example" {
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment
 resource "azurerm_role_assignment" "example" {
-  scope              = data.azurerm_subscription.current.id
-  role_definition_id = azurerm_role_definition.oai_user.role_definition_resource_id
-  principal_id       = azuread_service_principal.example.object_id
+  scope = data.azurerm_subscription.current.id
+  # role_definition_id = azurerm_role_definition.oai_user.role_definition_resource_id
+  # https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/managed-identity
+  role_definition_name = "Cognitive Services User"
+  principal_id         = azuread_service_principal.example.object_id
 }
